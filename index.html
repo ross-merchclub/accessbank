@@ -1021,6 +1021,19 @@
   color: white;
   font-size: 13px;
 }
+
+	  .btn.secondary {
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid #111;
+  color: #111;
+}
+
+.btn.secondary:hover {
+  background: #111;
+  color: white;
+}
+	  
   </style>
 </head>
 <body>
@@ -1566,11 +1579,37 @@ async function loadPreviouslyOrdered() {
             <h3>${product.name}</h3>
             <div class="price-line">From ${product.priceBreaks[0].price}</div>
             <button class="view-btn" type="button">Choose Options</button>
+			${product.previouslyOrdered ? `
+  <button class="btn secondary" onclick="reorderProduct('${product.id}')">
+    Reorder
+  </button>
+` : ``}
           </div>
         </article>
       `;
     }
 
+	  
+function reorderProduct(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  const defaultQty = product.priceBreaks?.[0]?.qty || 1;
+
+  const cartItem = {
+    productId: product.id,
+    name: product.name,
+    quantity: defaultQty,
+    color: product.colors?.[0] || "",
+    size: product.sizes?.[0] || ""
+  };
+
+  cart.push(cartItem);
+
+  renderCart();
+  openCart();
+}
+	  
     function openProduct(id) {
       const product = products.find(item => item.id === id);
 
