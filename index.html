@@ -982,6 +982,45 @@
         height: 420px;
       }
     }
+
+	  .account-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.orders-list {
+  display: grid;
+  gap: 12px;
+}
+
+.order-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  background: #fafafa;
+}
+
+.order-row strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.order-row small {
+  color: var(--muted);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #111;
+  color: white;
+  font-size: 13px;
+}
   </style>
 </head>
 <body>
@@ -1130,16 +1169,17 @@
         </div>
       </div>
 
-      <section class="account-preview" style="margin-top: 0;">
-        <div class="account-grid">
-          <div class="account-card"><strong>Order History</strong><small>Previous orders and reorders</small></div>
-          <div class="account-card"><strong>Order Placed</strong><small>New order requests received</small></div>
-          <div class="account-card"><strong>Waiting for Proof</strong><small>Artwork/proof pending</small></div>
-          <div class="account-card"><strong>In Production</strong><small>Approved orders in process</small></div>
-          <div class="account-card"><strong>In Transit</strong><small>Tracking and delivery updates</small></div>
-          <div class="account-card"><strong>Delivered</strong><small>Completed orders</small></div>
-        </div>
-      </section>
+<section class="account-preview" style="margin-top: 0;">
+  <div class="account-toolbar">
+    <h3>Recent Orders</h3>
+    <button class="pill-btn light" onclick="loadAccountOrders()">Refresh Orders</button>
+  </div>
+
+  <div id="accountOrders" class="orders-list">
+    <p style="color:#777;">Loading orders...</p>
+  </div>
+</section>
+		
     </main>
   </section>
 
@@ -1353,6 +1393,46 @@
       }
     }
 
+	  async function loadAccountOrders() {
+  const container = document.getElementById("accountOrders");
+  if (!container) return;
+
+  container.innerHTML = `<p style="color:#777;">Loading orders...</p>`;
+
+  try {
+    const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getOrders`);
+    const orders = await response.json();
+
+    if (!orders.length) {
+      container.innerHTML = `<p style="color:#777;">No orders found yet.</p>`;
+      return;
+    }
+
+    container.innerHTML = orders.reverse().map(order => `
+      <div class="order-row">
+        <div>
+          <strong>${order.order_id || ""}</strong>
+          <small>${order.submitted_at || ""}</small>
+        </div>
+        <div>
+          <strong>${order.contact_name || ""}</strong>
+          <small>${order.contact_email || ""}</small>
+        </div>
+        <div>
+          <strong>${order.company || ""}</strong>
+          <small>${order.notes || ""}</small>
+        </div>
+        <div>
+          <span class="status-pill">${order.status || "Order Placed"}</span>
+        </div>
+      </div>
+    `).join("");
+  } catch (error) {
+    console.error("Could not load orders", error);
+    container.innerHTML = `<p style="color:#777;">Could not load orders. Please try again.</p>`;
+  }
+}
+	  
     function renderFilters() {
       const categories = ["All", "Suggested", "Previously Ordered", ...new Set(products.map(product => product.category))];
       const filters = document.getElementById("filters");
@@ -1581,12 +1661,13 @@
       document.getElementById("drawerBackdrop").classList.remove("open");
     }
 
-    function showAccountPage() {
-      document.getElementById("storeView").style.display = "none";
-      document.getElementById("productPage").classList.remove("active");
-      document.getElementById("accountPage").classList.add("active");
-      window.scrollTo(0, 0);
-    }
+function showAccountPage() {
+  document.getElementById("storeView").style.display = "none";
+  document.getElementById("productPage").classList.remove("active");
+  document.getElementById("accountPage").classList.add("active");
+  window.scrollTo(0, 0);
+  loadAccountOrders();
+}
 
     function showToast(message) {
       const toast = document.getElementById("toast");
