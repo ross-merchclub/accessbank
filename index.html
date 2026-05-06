@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merch Club Storefront</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #111111;
+      --secondary: #1b1b1b;
+      --accent: #3a3a3a;
+      --muted: #777777;
+      --light: #f6f6f6;
+      --border: #dedede;
+      --white: #ffffff;
+      --radius: 18px;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Barlow Condensed', sans-serif;
+      background: var(--light);
+      color: var(--primary);
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 25px 8%;
+      background: rgba(20, 25, 24, 1);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .site-header.scrolled {
+      background: rgba(20, 25, 24, 0.85);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      height: auto;
+      background: transparent;
+    }
+
+    .brand-eyebrow {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      letter-spacing: 5px;
+      color: #bfbfbf;
+      text-transform: uppercase;
+    }
+
+    .brand-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      font-weight: normal;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .header-link,
+    .icon-btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      font-weight: normal;
+      letter-spacing: 1.5px;
+    }
+
+    .header-link {
+      padding: 0;
+      background: none;
+      border: none;
+      color: white;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0;
+      background: none;
+      border: none;
+      color: white;
+    }
+
+    .cart-icon,
+    .search-icon {
+      width: 25px;
+      height: 25px;
+    }
+
+    .cart-icon {
+      display: inline-block;
+    }
+
+    .search-icon {
+      stroke: currentColor;
+    }
+
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 0;
+      opacity: 0;
+      padding: 10px 0;
+      border: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+      background: transparent;
+      color: white;
+      transition: 0.25s ease;
+    }
+
+    .search-input.open {
+      width: 210px;
+      opacity: 1;
+      padding: 10px 8px;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .count {
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 2px;
+      background: #555;
+      color: white;
+      font-size: 12px;
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3,
+    .brand-title,
+    .category-head h2,
+    .promo-banner h2,
+    .top-row h2 {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    p,
+    .product-info p,
+    .detail-desc {
+      font-weight: 400;
+    }
+
+    /* Buttons */
+    .pill-btn,
+    .view-btn,
+    .detail-add,
+    .tab-btn {
+      font-weight: 600;
+    }
+
+    .pill-btn {
+      padding: 14px 22px;
+      border: none;
+      border-radius: 2px;
+      background: #242424;
+      color: white;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+    }
+
+    .pill-btn.primary {
+      background: #111;
+      border: 1px solid #3d3d3d;
+    }
+
+    .pill-btn.light {
+      background: white;
+      color: #111;
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    /* Hero */
+
+	
+	.hero {
+  min-height: 380px;
+  padding: 58px 8%;
+  padding-bottom: 40px;
+  display: grid;
+  grid-template-columns: 1.25fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+  color: white;
+  background:
+    linear-gradient(90deg, rgba(5, 8, 8, 0.96) 0%, rgba(5, 8, 8, 0.82) 42%, rgba(5, 8, 8, 0.35) 100%),
+    url('https://i.imgur.com/riHJ1rT.jpeg');
+  background-size: cover;
+  background-position: center right;
+}
+
+    .hero h1 {
+      margin-bottom: 26px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(38px, 4.3vw, 58px);
+      line-height: 1.02;
+      letter-spacing: 3px;
+    }
+
+    .hero p {
+      max-width: 850px;
+      margin-bottom: 34px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 19px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .hero-badge {
+      padding: 12px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      font-weight: 800;
+    }
+
+.how-tiles-section {
+  margin-top: 30px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.how-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.tile {
+  background: #1a1a1a;
+  color: #eaeaea;
+  text-align: center;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  min-height: 170px;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+/* alternating grayscale */
+.tile:nth-child(2),
+.tile:nth-child(4) {
+  background: #2a2a2a;
+}
+
+.tile-icon {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  color: #dcdcdc;
+}
+
+.tile-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tile p {
+  font-size: 15px;
+  font-weight: 500;
+  color: #cfcfcf;
+}
+
+.tile {
+  transition: all 0.25s ease;
+}
+
+
+@media (max-width: 900px) {
+  .how-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .how-tiles {
+    grid-template-columns: 1fr;
+  }
+}
+
+    /* Layout */
+    .main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 42px 5% 80px;
+    }
+
+    .store-content-wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 5%;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .top-row h2 {
+      font-size: 34px;
+      letter-spacing: -1px;
+    }
+
+    .top-row p {
+      color: var(--muted);
+    }
+
+    /* Promotional banner */
+.promo-banner {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  min-height: 240px;
+  margin: 60px 0 54px;
+  padding: 60px 10%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: white;
+
+  background: linear-gradient(
+    120deg,
+    #050505,
+    #111111,
+    #2b2b2b,
+    #0f0f0f,
+    #050505
+  );
+
+  background-size: 500% 500%;
+  animation: gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.promo-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+
+  background-size: 70px 70px;
+  opacity: 0.35;
+  animation: gridMove 8s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 70px 70px, 70px 70px; }
+}
+
+.promo-banner::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  right: -120px;
+  top: -120px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 65%);
+  animation: glowMove 7s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes glowMove {
+  from {
+    transform: translate(0, 0);
+    opacity: 0.35;
+  }
+  to {
+    transform: translate(-120px, 80px);
+    opacity: 0.75;
+  }
+}
+
+.promo-banner > div {
+  position: relative;
+  z-index: 2;
+}
+
+    .promo-banner h2 {
+      margin-bottom: 14px;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -1px;
+    }
+
+    .promo-banner p {
+      max-width: 560px;
+      margin-bottom: 24px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 18px;
+    }
+
+    /* Store filters and products */
+    .store-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .tab-btn {
+      padding: 11px 18px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: white;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    .category-section {
+      margin-bottom: 54px;
+    }
+
+    .category-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .category-head h2 {
+      margin-bottom: -1px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #111;
+      font-size: 26px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .category-head button {
+      border: none;
+      background: transparent;
+      color: #111;
+      font-weight: 700;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 26px;
+    }
+
+    .product-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: white;
+      transition: 0.18s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    .product-img {
+      height: 280px;
+      overflow: hidden;
+      background: #e9e9e9;
+    }
+
+    .product-img img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 18px;
+    }
+
+    .product-kicker {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .product-info h3 {
+      margin: 7px 0;
+      font-size: 20px;
+    }
+
+    .product-info p {
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .price-line {
+      margin-bottom: 16px;
+      font-weight: 900;
+    }
+
+    .view-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 2px;
+      background: #111;
+      color: white;
+      font-weight: 900;
+    }
+
+    /* Account */
+    .account-preview {
+      margin-top: 56px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .account-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: #fafafa;
+    }
+
+    .account-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .account-card small {
+      color: var(--muted);
+    }
+
+    /* Product detail page */
+    .product-page {
+      display: none;
+      min-height: 100vh;
+      background: white;
+    }
+
+    .product-page.active {
+      display: block;
+    }
+
+    .product-page-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 44px 5% 80px;
+    }
+
+    .back-btn {
+      margin-bottom: 28px;
+      border: none;
+      background: none;
+      color: #111;
+      font-weight: 900;
+    }
+
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .detail-image {
+      height: 620px;
+      overflow: hidden;
+      border-radius: 0;
+      background: #eee;
+    }
+
+    .detail-image img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .detail-content h1 {
+      margin-bottom: 14px;
+      font-size: clamp(38px, 4vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -1.4px;
+    }
+
+    .detail-category {
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .detail-desc {
+      margin-bottom: 28px;
+      color: #555;
+      font-size: 18px;
+    }
+
+    .break-box {
+      overflow: hidden;
+      margin-bottom: 26px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+    }
+
+    .break-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .break-row:last-child {
+      border-bottom: none;
+    }
+
+    .break-row strong {
+      font-weight: 900;
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .option-grid label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .detail-add {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 2px;
+      background: #111;
+      color: white;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .note-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 0;
+      background: #f7f7f7;
+      color: #555;
+    }
+
+    /* Cart drawer */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.52);
+      transition: 0.2s;
+    }
+
+    .drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: -470px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      width: min(470px, 100%);
+      height: 100vh;
+      background: white;
+      box-shadow: -24px 0 45px rgba(0, 0, 0, 0.2);
+      transition: 0.25s;
+    }
+
+    .cart-drawer.open {
+      right: 0;
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-head h2 {
+      font-size: 25px;
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+    }
+
+    .cart-item {
+      margin-bottom: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+    }
+
+    .cart-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .cart-item small {
+      display: block;
+      color: var(--muted);
+    }
+
+    .remove {
+      margin-top: 8px;
+      border: none;
+      background: none;
+      color: #9b1c1c;
+      font-weight: 900;
+    }
+
+    .drawer-footer {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+    }
+
+    .order-form {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: white;
+    }
+
+    textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    /* Footer */
+    .site-footer {
+      margin-top: 40px;
+      background: #333;
+      color: white;
+    }
+
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 48px 5%;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+      gap: 34px;
+    }
+
+    .footer-inner h3 {
+      margin-bottom: 18px;
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .footer-inner p,
+    .footer-inner a {
+      display: block;
+      margin-bottom: 10px;
+      color: #e5e5e5;
+      font-size: 15px;
+    }
+
+    .footer-logo img {
+      display: block;
+      max-width: 220px;
+      height: auto;
+    }
+
+    .footer-logo-center {
+      text-align: center;
+      padding: 0;
+    }
+
+    .footer-logo-center img {
+      max-width: 50px;
+      height: auto;
+      opacity: 0.85;
+    }
+
+    .footer-bottom {
+      padding: 18px 5%;
+      background: #050505;
+      color: #d5d5d5;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      z-index: 200;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      padding: 13px 18px;
+      border-radius: 2px;
+      background: #111;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 1100px) {
+      .footer-inner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero,
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .product-grid,
+      .account-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .site-header {
+        align-items: flex-start;
+        padding: 16px 5%;
+      }
+
+      .brand-logo {
+        width: 92px;
+        height: 62px;
+        font-size: 22px;
+      }
+
+      .brand-eyebrow {
+        font-size: 11px;
+        letter-spacing: 3px;
+      }
+
+      .brand-title {
+        font-size: 18px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 55px 5%;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .promo-banner {
+        min-height: 220px;
+        padding: 28px;
+      }
+
+      .product-grid,
+      .option-grid,
+      .account-grid,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-image {
+        height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section id="storeView">
+    <header class="site-header">
+      <div class="brand-wrap">
+        <div class="brand-logo" style="background: transparent;">
+          <img src="https://i.imgur.com/qGwThwc.png" alt="ACCESSbank" style="height: 42px; width: auto; display: block;" />
+        </div>
+        <div>
+          <div class="brand-eyebrow">Merch Club</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="header-link" onclick="showAccountPage()">My Account</button>
+
+        <div class="search-wrap">
+          <input class="search-input" id="searchInput" type="search" placeholder="Search products..." oninput="searchProducts(this.value)" />
+          <button class="icon-btn" onclick="toggleSearch()" aria-label="Search">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+        </div>
+
+        <button class="icon-btn" onclick="openCart()" aria-label="Cart">
+          <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
+          </svg>
+          <span class="count" id="cartCount">0</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h1>Welcome to the AccessBank Merch Store.</h1>
+        <p>Select curated merchandise from the options below. Choose your product first, then select color, size, and quantity on the product page.</p>
+        <div class="hero-badges">
+          <div class="hero-badge">Client-Specific Products</div>
+          <div class="hero-badge">Easy as 1-2-3</div>
+          <div class="hero-badge">Order Status Ready</div>
+        </div>
+      </div>
+    </section>
+	
+	<section class="how-tiles-section">
+		<div class="store-content-wrap">
+		<div class="how-tiles">
+			<div class="tile">
+				<div class="tile-icon">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M3 3h18l-2 13H5L3 3z"></path>
+					<circle cx="9" cy="20" r="1"></circle>
+					<circle cx="17" cy="20" r="1"></circle>
+					</svg>
+				</div>
+					<p>Select the product you need.</p>
+				</div>
+			<div class="tile">
+				<div class="tile-icon">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M6 2h9l5 5v15H6z"></path>
+					<path d="M14 2v6h6"></path>
+					</svg>
+				</div>
+					<p>Review product details and quantity breaks.</p>
+				</div>
+			<div class="tile">
+				<div class="tile-icon">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M12 3a9 9 0 1 0 9 9c0-1.5-1.2-2-2.5-2H16a2 2 0 0 1 0-4h2.5c1.3 0 2.5-.5 2.5-2A9 9 0 0 0 12 3z"></path>
+					</svg>
+				</div>
+					<p>Choose color, size, and quantity.</p>
+				</div>
+			<div class="tile">
+				<div class="tile-icon">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M3 7l9-4 9 4-9 4-9-4z"></path>
+					<path d="M3 7v10l9 4 9-4V7"></path>
+					</svg>
+				</div>
+					<p>Add items to cart and submit your request.</p>
+				</div>
+			</div>	
+		</div>
+	</section>
+
+    <main class="main">
+      <div class="top-row">
+        <div>
+          <h2>Shop Products</h2>
+          <p>Click a product to view full details and options.</p>
+        </div>
+      </div>
+
+      <div class="store-content-wrap">
+        <div class="store-tabs" id="filters"></div>
+        <div id="productSections" class="category-sections"></div>
+      </div>
+
+      <section class="promo-banner full-width">
+        <div>
+          <h2>Curated merch for every team, event, and reorder.</h2>
+          <p>Browse items, choose your options, and submit everything through one clean order request.</p>
+          <button class="pill-btn light" onclick="document.getElementById('productSections').scrollIntoView({ behavior: 'smooth' })">Shop Now</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">
+            <img src="https://i.imgur.com/mk6QGh4.png" alt="AccessBank Merch Store" />
+          </div>
+        </div>
+
+        <div>
+          <h3>Shop</h3>
+          <a href="#products">All Products</a>
+          <a href="#products">Suggested Products</a>
+          <a href="#products">Previously Ordered</a>
+          <a href="#products">Categories</a>
+        </div>
+
+        <div>
+          <h3>Account</h3>
+          <a href="javascript:void(0)" onclick="showAccountPage()">My Account</a>
+          <a href="javascript:void(0)" onclick="showAccountPage()">Order History</a>
+          <a href="javascript:void(0)" onclick="showAccountPage()">Order Status</a>
+          <a href="javascript:void(0)" onclick="openCart()">Cart</a>
+        </div>
+
+        <div>
+          <h3>Support</h3>
+          <p>Need help with product options, quantities, proofing, or shipping?</p>
+          <p>Contact your account manager for assistance.</p>
+        </div>
+      </div>
+
+      <div class="footer-logo-center">
+        <img src="https://i.imgur.com/5NNvzOc.png" alt="Merch Club Logo" />
+      </div>
+
+      <div class="footer-bottom">© 2026 Merch Club Built. All rights reserved.</div>
+    </footer>
+  </section>
+
+  <section class="product-page" id="accountPage">
+    <header class="site-header">
+      <div class="brand-wrap">
+        <div class="brand-logo" style="background: transparent;">
+          <img src="https://i.imgur.com/qGwThwc.png" alt="ACCESSbank" style="height: 42px; width: auto; display: block;" />
+        </div>
+        <div>
+          <div class="brand-eyebrow">Merch Club</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="header-link" onclick="backToStore()">Back to Store</button>
+        <button class="icon-btn" onclick="openCart()" aria-label="Cart">
+          <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
+          </svg>
+          <span class="count" id="cartCountAccount">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="top-row">
+        <div>
+          <h2>My Account</h2>
+          <p>Order history and order status will display here once connected to the main site login and Google Sheets.</p>
+        </div>
+      </div>
+
+      <section class="account-preview" style="margin-top: 0;">
+        <div class="account-grid">
+          <div class="account-card"><strong>Order History</strong><small>Previous orders and reorders</small></div>
+          <div class="account-card"><strong>Order Placed</strong><small>New order requests received</small></div>
+          <div class="account-card"><strong>Waiting for Proof</strong><small>Artwork/proof pending</small></div>
+          <div class="account-card"><strong>In Production</strong><small>Approved orders in process</small></div>
+          <div class="account-card"><strong>In Transit</strong><small>Tracking and delivery updates</small></div>
+          <div class="account-card"><strong>Delivered</strong><small>Completed orders</small></div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <section class="product-page" id="productPage">
+    <header class="site-header">
+      <div class="brand-wrap">
+        <div class="brand-logo" style="background: transparent;">
+          <img src="https://i.imgur.com/qGwThwc.png" alt="ACCESSbank" style="height: 42px; width: auto; display: block;" />
+        </div>
+        <div>
+          <div class="brand-eyebrow">Merch Club</div>
+        </div>
+      </div>
+
+      <button class="icon-btn" onclick="openCart()" aria-label="Cart">
+        <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
+        </svg>
+        <span class="count" id="cartCountDetail">0</span>
+      </button>
+    </header>
+
+    <div class="product-page-inner" id="productDetail"></div>
+  </section>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeCart()"></div>
+
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="drawer-head">
+      <h2>Your Cart</h2>
+      <button class="pill-btn light" onclick="closeCart()">Close</button>
+    </div>
+
+    <div class="drawer-body" id="cartBody"></div>
+
+    <div class="drawer-footer">
+      <strong>Submit Order Request</strong>
+      <form class="order-form" id="orderForm">
+        <input type="text" id="contactName" placeholder="Contact Name" required />
+        <input type="email" id="contactEmail" placeholder="Email Address" required />
+        <input type="text" id="companyName" placeholder="Company / Department" />
+        <textarea id="orderNotes" placeholder="Additional notes, event date, in-hands date, shipping details, etc."></textarea>
+        <button class="pill-btn primary" type="submit">Send Order Request</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast">Added to cart</div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "";
+
+    const products = [
+      {
+        id: "polo-001",
+        name: "Performance Polo",
+        category: "Apparel",
+        badge: "Suggested",
+        image: "https://images.unsplash.com/photo-1598032895397-b9472444bf93?auto=format&fit=crop&w=900&q=80",
+        description: "Moisture-wicking polo with optional embroidery. Great for team uniforms, sales teams, and events.",
+        colors: ["Black", "White", "Gray"],
+        sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
+        priceBreaks: [
+          { qty: 24, price: "$28.50" },
+          { qty: 48, price: "$26.75" },
+          { qty: 96, price: "$24.90" }
+        ]
+      },
+      {
+        id: "tumbler-001",
+        name: "Insulated Tumbler",
+        category: "Drinkware",
+        badge: "Previously Ordered",
+        image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=900&q=80",
+        description: "Double-wall stainless tumbler with full-color imprint option. Ideal for employee gifts and client giveaways.",
+        colors: ["Black", "White", "Stainless"],
+        sizes: [],
+        priceBreaks: [
+          { qty: 48, price: "$14.95" },
+          { qty: 96, price: "$13.80" },
+          { qty: 144, price: "$12.65" }
+        ]
+      },
+      {
+        id: "cap-001",
+        name: "Embroidered Cap",
+        category: "Headwear",
+        badge: "Suggested",
+        image: "https://images.unsplash.com/photo-1521369909029-2afed882baee?auto=format&fit=crop&w=900&q=80",
+        description: "Classic adjustable cap with front embroidery. Good for field teams, events, and casual uniforms.",
+        colors: ["Black", "Charcoal", "Khaki"],
+        sizes: ["One Size"],
+        priceBreaks: [
+          { qty: 24, price: "$12.25" },
+          { qty: 48, price: "$10.95" },
+          { qty: 144, price: "$9.75" }
+        ]
+      },
+      {
+        id: "notebook-001",
+        name: "Soft Touch Notebook",
+        category: "Office",
+        badge: "Suggested",
+        image: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=900&q=80",
+        description: "Premium notebook for meetings, onboarding kits, and client welcome packages.",
+        colors: ["Black", "Gray", "White"],
+        sizes: [],
+        priceBreaks: [
+          { qty: 100, price: "$6.95" },
+          { qty: 250, price: "$6.35" },
+          { qty: 500, price: "$5.85" }
+        ]
+      },
+      {
+        id: "bag-001",
+        name: "Everyday Tote Bag",
+        category: "Bags",
+        badge: "Previously Ordered",
+        image: "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=900&q=80",
+        description: "Reusable tote bag with large imprint area. Great for trade shows, welcome kits, and giveaways.",
+        colors: ["Natural", "Black", "Gray"],
+        sizes: [],
+        priceBreaks: [
+          { qty: 100, price: "$4.75" },
+          { qty: 250, price: "$4.25" },
+          { qty: 500, price: "$3.95" }
+        ]
+      }
+    ];
+
+    let activeCategory = "All";
+    let cart = JSON.parse(localStorage.getItem("merchClubCart")) || [];
+
+    function init() {
+      renderFilters();
+      renderProducts();
+      renderCart();
+    }
+
+    function renderFilters() {
+      const categories = ["All", "Suggested", "Previously Ordered", ...new Set(products.map(product => product.category))];
+      const filters = document.getElementById("filters");
+
+      filters.innerHTML = categories
+        .map(category => `<button class="tab-btn ${activeCategory === category ? "active" : ""}" onclick="setCategory('${category}')">${category}</button>`)
+        .join("");
+    }
+
+    function setCategory(category) {
+      activeCategory = category;
+      renderFilters();
+      renderProducts();
+    }
+
+    function toggleSearch() {
+      const input = document.getElementById("searchInput");
+      input.classList.toggle("open");
+
+      if (input.classList.contains("open")) {
+        input.focus();
+      } else {
+        input.value = "";
+        renderProducts();
+      }
+    }
+
+    function searchProducts(query) {
+      const q = query.toLowerCase().trim();
+
+      if (!q) {
+        renderProducts();
+        return;
+      }
+
+      const productSections = document.getElementById("productSections");
+      const results = products.filter(product =>
+        product.name.toLowerCase().includes(q) || product.category.toLowerCase().includes(q)
+      );
+
+      productSections.innerHTML = `
+        <section class="category-section">
+          <div class="category-head">
+            <h2>Search Results</h2>
+            <button type="button">${results.length} item(s)</button>
+          </div>
+          <div class="product-grid">
+            ${results.map(productCard).join("") || `<p style="color: #777;">No products found.</p>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function filteredProducts() {
+      return products.filter(product => {
+        if (activeCategory === "All") return true;
+        if (activeCategory === "Suggested") return product.badge === "Suggested";
+        if (activeCategory === "Previously Ordered") return product.badge === "Previously Ordered";
+        return product.category === activeCategory;
+      });
+    }
+
+    function renderProducts() {
+      const productSections = document.getElementById("productSections");
+      if (!productSections) return;
+
+      const productsToShow = filteredProducts();
+
+      if (activeCategory === "All") {
+        const categories = [...new Set(products.map(product => product.category))];
+
+        productSections.innerHTML = categories
+          .map(category => {
+            const categoryProducts = products.filter(product => product.category === category);
+
+            return `
+              <section class="category-section">
+                <div class="category-head">
+                  <h2>${category}</h2>
+                  <button type="button" onclick="setCategory('${category}')">View All</button>
+                </div>
+                <div class="product-grid">
+                  ${categoryProducts.map(productCard).join("")}
+                </div>
+              </section>
+            `;
+          })
+          .join("");
+      } else {
+        productSections.innerHTML = `
+          <section class="category-section">
+            <div class="category-head">
+              <h2>${activeCategory}</h2>
+              <button type="button" onclick="setCategory('All')">View All Products</button>
+            </div>
+            <div class="product-grid">
+              ${productsToShow.map(productCard).join("")}
+            </div>
+          </section>
+        `;
+      }
+    }
+
+    function productCard(product) {
+      return `
+        <article class="product-card" onclick="openProduct('${product.id}')">
+          <div class="product-img">
+            <img src="${product.image}" alt="${product.name}" />
+          </div>
+          <div class="product-info">
+            <h3>${product.name}</h3>
+            <div class="price-line">From ${product.priceBreaks[0].price}</div>
+            <button class="view-btn" type="button">Choose Options</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function openProduct(id) {
+      const product = products.find(item => item.id === id);
+
+      document.getElementById("storeView").style.display = "none";
+      document.getElementById("productPage").classList.add("active");
+      document.getElementById("productDetail").innerHTML = `
+        <button class="back-btn" onclick="backToStore()">← Back to Products</button>
+        <div class="detail-layout">
+          <div class="detail-image">
+            <img src="${product.image}" alt="${product.name}" />
+          </div>
+          <div class="detail-content">
+            <div class="detail-category">${product.category} • ${product.badge}</div>
+            <h1>${product.name}</h1>
+            <p class="detail-desc">${product.description}</p>
+            <h3 style="margin-bottom: 12px;">Quantity Breaks</h3>
+            <div class="break-box">
+              ${product.priceBreaks.map(row => `<div class="break-row"><span>${row.qty}+ pcs</span><strong>${row.price}</strong></div>`).join("")}
+            </div>
+            <div class="option-grid">
+              <div>
+                <label>Quantity</label>
+                <input type="number" id="detailQty" min="1" value="${product.priceBreaks[0].qty}" />
+              </div>
+              <div>
+                <label>Color</label>
+                <select id="detailColor">
+                  ${product.colors.length ? product.colors.map(color => `<option>${color}</option>`).join("") : `<option>N/A</option>`}
+                </select>
+              </div>
+              <div>
+                <label>Size</label>
+                <select id="detailSize">
+                  ${product.sizes.length ? product.sizes.map(size => `<option>${size}</option>`).join("") : `<option>N/A</option>`}
+                </select>
+              </div>
+            </div>
+            <button class="detail-add" onclick="addDetailToCart('${product.id}')">Add to Cart</button>
+            <div class="note-box">Final pricing, proofing, production schedule, and shipping details will be confirmed after the request is reviewed.</div>
+          </div>
+        </div>
+      `;
+
+      window.scrollTo(0, 0);
+    }
+
+    function backToStore() {
+      document.getElementById("productPage").classList.remove("active");
+      document.getElementById("accountPage").classList.remove("active");
+      document.getElementById("storeView").style.display = "block";
+      window.scrollTo(0, 0);
+    }
+
+    function addDetailToCart(id) {
+      const product = products.find(item => item.id === id);
+
+      cart.push({
+        cartId: Date.now(),
+        productId: product.id,
+        name: product.name,
+        category: product.category,
+        quantity: document.getElementById("detailQty").value,
+        color: document.getElementById("detailColor").value,
+        size: document.getElementById("detailSize").value
+      });
+
+      saveCart();
+      openCart();
+      showToast(`${product.name} added to cart`);
+    }
+
+    function saveCart() {
+      localStorage.setItem("merchClubCart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    function renderCart() {
+      document.getElementById("cartCount").textContent = cart.length;
+      document.getElementById("cartCountDetail").textContent = cart.length;
+      document.getElementById("cartCountAccount").textContent = cart.length;
+
+      document.getElementById("cartBody").innerHTML = cart.length
+        ? cart
+            .map(item => `
+              <div class="cart-item">
+                <strong>${item.name}</strong>
+                <small>Qty: ${item.quantity} • Color: ${item.color} • Size: ${item.size}</small>
+                <small>${item.category}</small>
+                <button class="remove" onclick="removeFromCart(${item.cartId})">Remove</button>
+              </div>
+            `)
+            .join("")
+        : `<p style="color: #777; text-align: center; padding: 40px 10px;">Your cart is empty.</p>`;
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.cartId !== id);
+      saveCart();
+    }
+
+    function openCart() {
+      document.getElementById("cartDrawer").classList.add("open");
+      document.getElementById("drawerBackdrop").classList.add("open");
+    }
+
+    function closeCart() {
+      document.getElementById("cartDrawer").classList.remove("open");
+      document.getElementById("drawerBackdrop").classList.remove("open");
+    }
+
+    function showAccountPage() {
+      document.getElementById("storeView").style.display = "none";
+      document.getElementById("productPage").classList.remove("active");
+      document.getElementById("accountPage").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+
+    document.getElementById("orderForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      if (!cart.length) {
+        showToast("Please add at least one item.");
+        return;
+      }
+
+      const orderData = {
+        submittedAt: new Date().toISOString(),
+        clientId: "MERCH_CLUB_CLIENT_001",
+        status: "Order Placed",
+        contactName: contactName.value,
+        contactEmail: contactEmail.value,
+        companyName: companyName.value,
+        notes: orderNotes.value,
+        items: cart
+      };
+
+      if (!GOOGLE_SCRIPT_URL) {
+        console.log("Order ready for Google Sheets:", orderData);
+        showToast("Order captured. Add Google Script URL to send to Sheets.");
+        return;
+      }
+
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData)
+      });
+
+      cart = [];
+      saveCart();
+      event.target.reset();
+      closeCart();
+      showToast("Order submitted successfully.");
+    });
+
+    window.addEventListener("scroll", () => {
+      document.querySelectorAll(".site-header").forEach(header => {
+        header.classList.toggle("scrolled", window.scrollY > 20);
+      });
+    });
+
+    init();
+  </script>
+</body>
+</html>
