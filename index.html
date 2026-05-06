@@ -1230,9 +1230,20 @@
   <div class="toast" id="toast">Added to cart</div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = "";
+    // ==============================
+    // GOOGLE SHEETS BACKEND SETTINGS
+    // ==============================
+    // 1. Create your Google Sheet with tabs: Products, Orders, Order_Items
+    // 2. Deploy the Apps Script as a Web App
+    // 3. Paste the Web App URL below
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlNBkPjd4mx_q3IrEWiL1jrxfVpjAfjy9CYZycsC10zhnJMq6HeehfAFpE3ujO2UEn/exec";
 
-    const products = [
+    // Products are now loaded from Google Sheets.
+    // The fallback products below will only show if GOOGLE_SCRIPT_URL is empty
+    // or if the Google Sheet cannot be loaded.
+    let products = [];
+
+    const fallbackProducts = [
       {
         id: "polo-001",
         name: "Performance Polo",
@@ -1313,10 +1324,33 @@
     let activeCategory = "All";
     let cart = JSON.parse(localStorage.getItem("merchClubCart")) || [];
 
-    function init() {
-      renderFilters();
-      renderProducts();
+    async function init() {
+      await loadProductsFromSheet();
       renderCart();
+    }
+
+    async function loadProductsFromSheet() {
+      if (!GOOGLE_SCRIPT_URL) {
+        products = fallbackProducts;
+        renderFilters();
+        renderProducts();
+        return;
+      }
+
+      try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getProducts`);
+        const data = await response.json();
+
+        products = data.filter(product => product.active !== false);
+
+        renderFilters();
+        renderProducts();
+      } catch (error) {
+        console.error("Could not load products from Google Sheets. Using fallback products.", error);
+        products = fallbackProducts;
+        renderFilters();
+        renderProducts();
+      }
     }
 
     function renderFilters() {
@@ -1589,8 +1623,11 @@
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData)
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "submitOrder",
+          ...orderData
+        })
       });
 
       cart = [];
