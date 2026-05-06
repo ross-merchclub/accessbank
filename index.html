@@ -1381,10 +1381,12 @@
         const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getProducts`);
         const data = await response.json();
 
-        products = data.filter(product => product.active !== false);
+products = data.filter(product => product.active !== false);
 
-        renderFilters();
-        renderProducts();
+await loadPreviouslyOrdered();
+
+renderFilters();
+renderProducts();
       } catch (error) {
         console.error("Could not load products from Google Sheets. Using fallback products.", error);
         products = fallbackProducts;
@@ -1430,6 +1432,24 @@
   } catch (error) {
     console.error("Could not load orders", error);
     container.innerHTML = `<p style="color:#777;">Could not load orders. Please try again.</p>`;
+  }
+}
+
+async function loadPreviouslyOrdered() {
+  try {
+    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getPreviouslyOrdered`);
+    const orderedIds = await res.json();
+
+    if (!orderedIds.length) return;
+
+    products = products.map(p => ({
+      ...p,
+      previouslyOrdered: orderedIds.includes(p.id)
+    }));
+
+    renderProducts();
+  } catch (e) {
+    console.error("Error loading previously ordered", e);
   }
 }
 	  
@@ -1490,7 +1510,7 @@
       return products.filter(product => {
         if (activeCategory === "All") return true;
         if (activeCategory === "Suggested") return product.badge === "Suggested";
-        if (activeCategory === "Previously Ordered") return product.badge === "Previously Ordered";
+        if (activeCategory === "Previously Ordered") return product.previouslyOrdered === true;
         return product.category === activeCategory;
       });
     }
