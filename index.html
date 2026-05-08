@@ -1792,46 +1792,42 @@ function showAccountPage() {
 
 const submitBtn = document.getElementById("submitBtn");
 
+const orderId = "AB-" + new Date()
+  .toISOString()
+  .replace(/[-:T.Z]/g, "")
+  .slice(0, 14);
+
 submitBtn.disabled = true;
 submitBtn.textContent = "Submitting...";
 
 try {
-
-  const response = await fetch(GOOGLE_SCRIPT_URL, {
+  await fetch(GOOGLE_SCRIPT_URL, {
     method: "POST",
+    mode: "no-cors",
     headers: {
       "Content-Type": "text/plain;charset=utf-8"
     },
     body: JSON.stringify({
       action: "submitOrder",
+      orderId: orderId,
       ...orderData
     })
   });
 
-  const result = await response.json();
+  cart = [];
+  saveCart();
+  event.target.reset();
+  closeCart();
 
-  if (result.success) {
+  showToast(`Order submitted successfully: ${orderId}`);
 
-    cart = [];
-    saveCart();
-    event.target.reset();
-    closeCart();
-
-    showToast(`Order submitted successfully: ${result.orderId}`);
-
-    alert(
-      `Thank you! Your order request has been submitted.\n\nOrder Number: ${result.orderId}`
-    );
-
-  } else {
-    showToast("Could not submit order.");
-  }
+  alert(
+    `Thank you! Your order request has been submitted.\n\nOrder Number: ${orderId}`
+  );
 
 } catch (error) {
-
   console.error(error);
   showToast("Error submitting order.");
-
 }
 
 submitBtn.disabled = false;
