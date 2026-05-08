@@ -1037,29 +1037,24 @@
   color: white;
 }
 
-	  .ticker-strip {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 4;
-      display: flex;
-      overflow: hidden;
-      background: rgba(0,0,0,0.68);
-      border-top: 1px solid rgba(255,255,255,0.16);
-      box-shadow: 0 -10px 35px rgba(0,174,239,0.08);
-      white-space: nowrap;
-    }
+.ticker-strip {
+  width: 100%;
+  overflow: hidden;
+  background: #3b3b3b;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+}
 
-    .ticker-strip span {
-      display: inline-block;
-      padding: 14px 28px;
-      color: rgba(255,255,255,0.86);
-      font-weight: 800;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      animation: tickerMove 22s linear infinite;
-    }
+.ticker-strip span {
+  display: inline-block;
+  padding: 14px 28px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  animation: tickerMove 22s linear infinite;
+}
 
     @keyframes tickerMove {
       from { transform: translateX(0); }
@@ -1112,14 +1107,13 @@
           <div class="hero-badge">Easy as 1-2-3</div>
           <div class="hero-badge">Order Status Ready</div>
         </div>
+      </div>
+    </section>
 	  <div class="ticker-strip">
         <span>• Apparel • Awards • Drinkware • Bags • Brochures • Gloves • Office Items • Others •</span>
         <span>• Apparel • Awards • Drinkware • Bags • Brochures • Gloves • Office Items • Others •</span>
         <span>• Apparel • Awards • Drinkware • Bags • Brochures • Gloves • Office Items • Others •</span>
       </div>
-      </div>
-    </section>
-	
 	<section class="how-tiles-section">
 		<div class="store-content-wrap">
 		<div class="how-tiles">
