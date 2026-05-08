@@ -1060,6 +1060,66 @@
       from { transform: translateX(0); }
       to { transform: translateX(-100%); }
     }
+
+
+.light-wave-section {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 170px;
+  margin: -54px 0 54px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #050505 0%, #111 55%, #f6f6f6 100%);
+}
+
+.light-wave {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.light-wave span {
+  position: absolute;
+  left: -15%;
+  width: 130%;
+  height: 90px;
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: 0.65;
+  transform: rotate(-2deg);
+  animation: waveDrift 8s ease-in-out infinite alternate;
+}
+
+.light-wave span:nth-child(1) {
+  bottom: 50px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.85) 0%, rgba(0,174,239,0.36) 35%, transparent 72%);
+}
+
+.light-wave span:nth-child(2) {
+  bottom: 30px;
+  opacity: 0.45;
+  background: radial-gradient(ellipse at center, rgba(0,174,239,0.42) 0%, rgba(255,255,255,0.35) 38%, transparent 75%);
+  animation-duration: 10s;
+  animation-direction: alternate-reverse;
+}
+
+.light-wave span:nth-child(3) {
+  bottom: 18px;
+  opacity: 0.35;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.5) 0%, rgba(120,210,255,0.22) 42%, transparent 78%);
+  animation-duration: 12s;
+}
+
+@keyframes waveDrift {
+  from {
+    transform: translateX(-3%) translateY(5px) rotate(-2deg) scaleY(0.65);
+  }
+  to {
+    transform: translateX(3%) translateY(-10px) rotate(2deg) scaleY(0.85);
+  }
+}
+	  
   </style>
 </head>
 <body>
@@ -1177,6 +1237,14 @@
           <button class="pill-btn light" onclick="document.getElementById('productSections').scrollIntoView({ behavior: 'smooth' })">Shop Now</button>
         </div>
       </section>
+
+   <section class="light-wave-section">
+     <div class="light-wave">
+ 	   <span></span>
+	    <span></span>
+	    <span></span>
+	  </div>
+	</section>
     </main>
   </section>
 
