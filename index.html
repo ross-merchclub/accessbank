@@ -1305,7 +1305,7 @@
         <input type="email" id="contactEmail" placeholder="Email Address" required />
         <input type="text" id="companyName" placeholder="Company / Department" />
         <textarea id="orderNotes" placeholder="Additional notes, event date, in-hands date, shipping details, etc."></textarea>
-        <button class="pill-btn primary" type="submit">Send Order Request</button>
+        <button class="pill-btn primary" type="submit" id="submitBtn">Send Order Request</button>
       </form>
     </div>
   </aside>
@@ -1790,21 +1790,52 @@ function showAccountPage() {
         return;
       }
 
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "submitOrder",
-          ...orderData
-        })
-      });
+const submitBtn = document.getElementById("submitBtn");
 
-      cart = [];
-      saveCart();
-      event.target.reset();
-      closeCart();
-      showToast("Order submitted successfully.");
+submitBtn.disabled = true;
+submitBtn.textContent = "Submitting...";
+
+try {
+
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+      action: "submitOrder",
+      ...orderData
+    })
+  });
+
+  const result = await response.json();
+
+  if (result.success) {
+
+    cart = [];
+    saveCart();
+    event.target.reset();
+    closeCart();
+
+    showToast(`Order submitted successfully: ${result.orderId}`);
+
+    alert(
+      `Thank you! Your order request has been submitted.\n\nOrder Number: ${result.orderId}`
+    );
+
+  } else {
+    showToast("Could not submit order.");
+  }
+
+} catch (error) {
+
+  console.error(error);
+  showToast("Error submitting order.");
+
+}
+
+submitBtn.disabled = false;
+submitBtn.textContent = "Send Order Request";
     });
 
     window.addEventListener("scroll", () => {
